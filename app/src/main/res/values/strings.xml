@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Recentrics</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="contacts_fragment_name">Contacts</string>
+    <string name="meetings_fragment_name">Meetings</string>
+    <string name="travel_fragment_name">Travel</string>
+
 </resources>
