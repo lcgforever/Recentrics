@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingBottom="6dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="6dp">
+
+    <ImageButton
+        android:id="@+id/profile_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:clickable="false"
+        android:background="@drawable/profile_green_background"
+        android:src="@drawable/ic_profile_image" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@id/profile_image"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Yiming Li"
+            android:textColor="@color/primary_text"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/email_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="yiming.li@citrix.com"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Software Engineer"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/phone_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="310-498-7203"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/office_city_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Goleta"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/office_country_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="USA"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/latest_email_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05/02/2015 12:30 PM"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+        <TextView
+            android:id="@+id/latest_email_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Try out card view. It will be awesome!"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/secondary_text" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/call_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_phone_call" />
+
+</RelativeLayout>
