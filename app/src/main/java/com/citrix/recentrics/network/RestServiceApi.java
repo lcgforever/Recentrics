@@ -1,6 +1,6 @@
 package com.citrix.recentrics.network;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -10,5 +10,5 @@ public interface RestServiceApi {
 
     @GET("/contacts/{userKey}")
     void getContactInfoListByKey(@Path("userKey") int userKey,
-                                 Callback<JsonObject> callback);
+                                 Callback<JsonArray> callback);
 }

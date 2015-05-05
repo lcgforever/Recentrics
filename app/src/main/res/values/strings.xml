@@ -5,5 +5,7 @@
     <string name="contacts_fragment_name">Contacts</string>
     <string name="meetings_fragment_name">Meetings</string>
     <string name="travel_fragment_name">Travel</string>
+    <string name="snackbar_message">Refresh time out.</string>
+    <string name="snackbar_action">DISMISS</string>
 
 </resources>

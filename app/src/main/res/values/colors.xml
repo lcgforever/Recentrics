@@ -7,4 +7,11 @@
     <color name="control_normal">#DADDE0</color>
     <color name="control_highlight">#8997AD</color>
 
+    <color name="primary_text">#DE000000</color>
+    <color name="secondary_text">#8A000000</color>
+    <color name="amber">#FFC107</color>
+    <color name="cyan">#00BCD4</color>
+    <color name="green">#009688</color>
+    <color name="purple">#7E57C2</color>
+    <color name="red">#F44336</color>
 </resources>

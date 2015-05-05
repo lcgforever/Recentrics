@@ -1,5 +1,6 @@
 package com.citrix.recentrics.database;
 
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -16,22 +17,39 @@ public class ContactInfo {
     public static final String FIELD_LATEST_EMAIL_TIME = "field_latest_email_time";
     public static final String FIELD_LATEST_EMAIL_CONTENT = "field_latest_email_content";
 
+    @SerializedName("email")
     @DatabaseField(id = true, canBeNull = false, columnName = FIELD_EMAIL)
     private String email;
+
+    @SerializedName("name")
     @DatabaseField(canBeNull = false, columnName = FIELD_NAME)
     private String name;
+
+    @SerializedName("title")
     @DatabaseField(canBeNull = true, columnName = FIELD_TITLE)
     private String title;
+
+    @SerializedName("officePhone")
     @DatabaseField(canBeNull = true, columnName = FIELD_OFFICE_PHONE_NUMBER)
     private String officePhoneNumber;
+
+    @SerializedName("officeCity")
     @DatabaseField(canBeNull = true, columnName = FIELD_OFFICE_CITY)
     private String officeCity;
+
+    @SerializedName("officeCountry")
     @DatabaseField(canBeNull = true, columnName = FIELD_OFFICE_COUNTRY)
     private String officeCountry;
+
+    @SerializedName("numOfEmails")
     @DatabaseField(canBeNull = true, columnName = FIELD_NUMBER_OF_EMAILS)
     private String numberOfEmails;
+
+    @SerializedName("lastEmailTime")
     @DatabaseField(canBeNull = true, columnName = FIELD_LATEST_EMAIL_TIME)
     private String latestEmailTime;
+
+    @SerializedName("lastEmail")
     @DatabaseField(canBeNull = true, columnName = FIELD_LATEST_EMAIL_CONTENT)
     private String latestEmailContent;
 

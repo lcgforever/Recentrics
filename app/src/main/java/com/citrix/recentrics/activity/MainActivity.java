@@ -15,9 +15,13 @@ import android.view.MenuItem;
 import com.citrix.recentrics.R;
 import com.citrix.recentrics.database.DatabaseManager;
 import com.citrix.recentrics.fragment.ContactsFragment;
+import com.citrix.recentrics.fragment.MeetingsFragment;
+import com.citrix.recentrics.fragment.TravelFragment;
 import com.citrix.recentrics.library.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity implements ActionMenuView.OnMenuItemClickListener {
+
+    private static final int TOTAL_TAB_COUNT = 3;
 
     private Toolbar toolbar;
     private ActionMenuView menuView;
@@ -38,10 +42,7 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
 
         SlidingTabLayout tabLayout = (SlidingTabLayout) findViewById(R.id.tab_layout);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
-        ContactsFragment[] fragments = new ContactsFragment[3];
-        fragments[0] = new ContactsFragment();
-        fragments[1] = new ContactsFragment();
-        fragments[2] = new ContactsFragment();
+        Fragment[] fragments = {ContactsFragment.newInstance(), MeetingsFragment.newInstance(), TravelFragment.newInstance()};
         TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(tabsAdapter);
         tabLayout.setDistributeEvenly(true);
@@ -70,23 +71,21 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
 
     private class TabsAdapter extends FragmentPagerAdapter {
 
-        private static final int TOTAL_COUNT = 3;
+        private Fragment[] fragments;
 
-        private ContactsFragment[] fragments;
-
-        public TabsAdapter(FragmentManager fragmentManager, ContactsFragment[] fragments) {
+        public TabsAdapter(FragmentManager fragmentManager, Fragment[] fragments) {
             super(fragmentManager);
             this.fragments = fragments;
         }
 
         @Override
-        public ContactsFragment getItem(int position) {
+        public Fragment getItem(int position) {
             return fragments[position];
         }
 
         @Override
         public int getCount() {
-            return TOTAL_COUNT;
+            return TOTAL_TAB_COUNT;
         }
 
         @Override
