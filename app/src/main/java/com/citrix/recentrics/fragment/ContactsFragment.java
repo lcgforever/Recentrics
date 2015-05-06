@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,37 @@ public class ContactsFragment extends Fragment {
                 swipeRefreshLayout.setEnabled(layoutManager.findFirstCompletelyVisibleItemPosition() == 0);
             }
         });
+
+        SwipeableRecyclerViewTouchListener swipeTouchListener =
+                new SwipeableRecyclerViewTouchListener(recyclerView,
+                        new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                            @Override
+                            public boolean canSwipe(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    contactModel.getContactInfoList().remove(position);
+                                    contactInfoAdapter.notifyItemRemoved(position);
+                                }
+                                contactInfoAdapter.notifyDataSetChanged();
+                                Log.d("SWIPE", "onDismissedBySwipeLeft");
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    contactModel.getContactInfoList().remove(position);
+                                    contactInfoAdapter.notifyItemRemoved(position);
+                                }
+                                contactInfoAdapter.notifyDataSetChanged();
+                                Log.d("SWIPE", "onDismissedBySwipeRight");
+                            }
+                        });
+
+        recyclerView.addOnItemTouchListener(swipeTouchListener);
 
         return view;
     }

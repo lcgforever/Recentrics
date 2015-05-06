@@ -21,7 +21,7 @@ import com.citrix.recentrics.library.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity implements ActionMenuView.OnMenuItemClickListener {
 
-    private static final int TOTAL_TAB_COUNT = 3;
+    private static final int TOTAL_TAB_COUNT = 1;
 
     private Toolbar toolbar;
     private ActionMenuView menuView;
