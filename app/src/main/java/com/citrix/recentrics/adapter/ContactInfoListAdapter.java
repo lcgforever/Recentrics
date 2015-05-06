@@ -17,7 +17,7 @@ import com.citrix.recentrics.database.ContactInfo;
 
 import java.util.List;
 
-public class ContactInfoAdapter extends RecyclerView.Adapter<ContactInfoAdapter.ContactViewHolder> {
+public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoListAdapter.ContactViewHolder> {
 
     private static final int TYPE_COLLAPSED = 0;
     private static final int TYPE_EXPANDED = 1;
@@ -27,7 +27,7 @@ public class ContactInfoAdapter extends RecyclerView.Adapter<ContactInfoAdapter.
     private List<ContactInfo> contactInfoList;
     private boolean[] expanded;
 
-    public ContactInfoAdapter(Context context, List<ContactInfo> contactInfoList) {
+    public ContactInfoListAdapter(Context context, List<ContactInfo> contactInfoList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.contactInfoList = contactInfoList;

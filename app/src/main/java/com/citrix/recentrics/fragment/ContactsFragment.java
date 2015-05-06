@@ -1,5 +1,7 @@
 package com.citrix.recentrics.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +15,9 @@ import android.view.ViewGroup;
 
 import com.citrix.recentrics.R;
 import com.citrix.recentrics.activity.BaseApplication;
-import com.citrix.recentrics.adapter.ContactInfoAdapter;
+import com.citrix.recentrics.activity.MainActivity;
+import com.citrix.recentrics.adapter.ContactInfoCardAdapter;
+import com.citrix.recentrics.adapter.ContactInfoListAdapter;
 import com.citrix.recentrics.event.DataUpdatedEvent;
 import com.citrix.recentrics.event.TimeOutEvent;
 import com.citrix.recentrics.model.ContactModel;
@@ -30,7 +34,8 @@ public class ContactsFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private ContactInfoAdapter contactInfoAdapter;
+    private ContactInfoCardAdapter contactInfoCardAdapter;
+    private ContactInfoListAdapter contactInfoListAdapter;
     private ContactModel contactModel;
     private Bus bus;
 
@@ -46,7 +51,8 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contactModel = ContactModel.getInstance();
-        contactInfoAdapter = new ContactInfoAdapter(getActivity(), contactModel.getContactInfoList());
+        contactInfoCardAdapter = new ContactInfoCardAdapter(getActivity(), contactModel.getContactInfoList());
+        contactInfoListAdapter = new ContactInfoListAdapter(getActivity(), contactModel.getContactInfoList());
         bus = BaseApplication.getBus();
     }
 
@@ -82,13 +88,15 @@ public class ContactsFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(contactInfoAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 swipeRefreshLayout.setEnabled(layoutManager.findFirstCompletelyVisibleItemPosition() == 0);
             }
         });
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        boolean showInCardView = sharedPreferences.getBoolean(MainActivity.PREF_VIEW_IN_CARD, false);
+        recyclerView.setAdapter(showInCardView ? contactInfoCardAdapter : contactInfoListAdapter);
 
         return view;
     }
@@ -113,9 +121,23 @@ public class ContactsFragment extends Fragment {
         });
     }
 
+    public void changeToCardView() {
+        contactInfoCardAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        recyclerView.setAdapter(contactInfoCardAdapter);
+    }
+
+    public void changeToListView() {
+        contactInfoListAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        recyclerView.setAdapter(contactInfoListAdapter);
+    }
+
     @Subscribe
     public void onDataUpdatedEventReceived(DataUpdatedEvent event) {
-        contactInfoAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        if (recyclerView.getAdapter() instanceof ContactInfoListAdapter) {
+            contactInfoListAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        } else {
+            contactInfoCardAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        }
         swipeRefreshLayout.setRefreshing(false);
     }
 

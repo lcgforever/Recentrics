@@ -1,5 +1,21 @@
 <resources>
 
+    <style name="TextAppearance.Primary" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 
+    <style name="TextAppearance.Secondary" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="TextAppearance.Card.Secondary" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 
 </resources>
