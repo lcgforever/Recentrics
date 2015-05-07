@@ -40,4 +40,8 @@ public class ContactModel {
         }
         return contactInfoList;
     }
+
+    public void removeContactInfoItem(ContactInfo contactInfo) {
+        contactInfoMap.remove(contactInfo.getEmail());
+    }
 }

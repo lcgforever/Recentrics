@@ -7,5 +7,7 @@
     <string name="travel_fragment_name">Travel</string>
     <string name="snackbar_message">Refresh time out.</string>
     <string name="snackbar_action">DISMISS</string>
+    <string name="action_list_view">View in list</string>
+    <string name="action_card_view">View in card</string>
 
 </resources>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
     android:paddingBottom="6dp"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
@@ -16,8 +17,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
-        android:clickable="false"
         android:background="@drawable/profile_green_background"
+        android:clickable="false"
         android:src="@drawable/ic_profile_image" />
 
     <LinearLayout
@@ -34,14 +35,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:textColor="@color/primary_text"
-            android:textSize="18sp" />
+            android:text="Yiming Li"
+            android:textAppearance="@style/TextAppearance.Primary" />
 
         <TextView
             android:id="@+id/email_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text" />
+            android:text="yiming.li@citrix.com"
+            android:textAppearance="@style/TextAppearance.Secondary" />
 
     </LinearLayout>
 
@@ -53,5 +55,4 @@
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_phone_call" />
-
 </RelativeLayout>

@@ -1,16 +1,19 @@
 package com.citrix.recentrics.activity;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.citrix.recentrics.R;
 import com.citrix.recentrics.database.DatabaseManager;
@@ -21,11 +24,15 @@ import com.citrix.recentrics.library.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity implements ActionMenuView.OnMenuItemClickListener {
 
-    private static final int TOTAL_TAB_COUNT = 1;
+    public static final String PREF_VIEW_IN_CARD = "PREF_VIEW_IN_CARD";
+    private static final int TOTAL_TAB_COUNT = 3;
 
     private Toolbar toolbar;
     private ActionMenuView menuView;
     private ViewPager viewPager;
+    private TabsAdapter tabsAdapter;
+    private MenuItem changeViewItem;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
         SlidingTabLayout tabLayout = (SlidingTabLayout) findViewById(R.id.tab_layout);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         Fragment[] fragments = {ContactsFragment.newInstance(), MeetingsFragment.newInstance(), TravelFragment.newInstance()};
-        TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager(), fragments);
+        tabsAdapter = new TabsAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(tabsAdapter);
         tabLayout.setDistributeEvenly(true);
         tabLayout.setViewPager(viewPager);
@@ -53,6 +60,19 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
                 return Color.WHITE;
             }
         });
+        tabLayout.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (changeViewItem != null) {
+                    changeViewItem.setVisible(position == 0);
+                }
+            }
+        });
+
+        preferences = getPreferences(MODE_PRIVATE);
+        if (!preferences.contains(PREF_VIEW_IN_CARD)) {
+            preferences.edit().putBoolean(PREF_VIEW_IN_CARD, false).apply();
+        }
     }
 
     @Override
@@ -60,12 +80,36 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
         // Inflate the menu; this adds items to the action bar if it is present.
         Menu actionMenu = menuView.getMenu();
         getMenuInflater().inflate(R.menu.menu_main, actionMenu);
+        changeViewItem = actionMenu.findItem(R.id.action_change_view);
+        boolean viewInCard = preferences.getBoolean(PREF_VIEW_IN_CARD, false);
+        if (viewInCard) {
+            changeViewItem.setTitle(getString(R.string.action_list_view));
+        } else {
+            changeViewItem.setTitle(getString(R.string.action_card_view));
+        }
         return true;
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        return false;
+        switch (item.getItemId()) {
+            case R.id.action_change_view:
+                boolean viewInCard = preferences.getBoolean(PREF_VIEW_IN_CARD, false);
+                if (!viewInCard) {
+                    changeViewItem.setTitle(getString(R.string.action_list_view));
+                    ((ContactsFragment) tabsAdapter.getItem(0)).changeToCardView();
+                    preferences.edit().putBoolean(PREF_VIEW_IN_CARD, true).apply();
+                } else {
+                    changeViewItem.setTitle(getString(R.string.action_card_view));
+                    ((ContactsFragment) tabsAdapter.getItem(0)).changeToListView();
+                    preferences.edit().putBoolean(PREF_VIEW_IN_CARD, false).apply();
+                }
+                break;
+
+            case R.id.action_settings:
+                break;
+        }
+        return true;
     }
 
 
