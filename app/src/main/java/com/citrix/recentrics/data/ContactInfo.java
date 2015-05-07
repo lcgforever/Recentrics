@@ -1,4 +1,4 @@
-package com.citrix.recentrics.database;
+package com.citrix.recentrics.data;
 
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
@@ -9,6 +9,7 @@ public class ContactInfo {
 
     public static final String FIELD_EMAIL = "field_email";
     public static final String FIELD_NAME = "field_name";
+    public static final String FIELD_INFO_COMPLETE = "field_info_complete";
     public static final String FIELD_TITLE = "field_title";
     public static final String FIELD_OFFICE_PHONE_NUMBER = "field_office_phone_number";
     public static final String FIELD_OFFICE_CITY = "field_office_city";
@@ -24,6 +25,9 @@ public class ContactInfo {
     @SerializedName("name")
     @DatabaseField(canBeNull = false, columnName = FIELD_NAME)
     private String name;
+
+    @DatabaseField(canBeNull = false, columnName = FIELD_INFO_COMPLETE)
+    private boolean infoComplete;
 
     @SerializedName("title")
     @DatabaseField(canBeNull = true, columnName = FIELD_TITLE)
@@ -43,7 +47,7 @@ public class ContactInfo {
 
     @SerializedName("numOfEmails")
     @DatabaseField(canBeNull = true, columnName = FIELD_NUMBER_OF_EMAILS)
-    private String numberOfEmails;
+    private int numberOfEmails;
 
     @SerializedName("lastEmailTime")
     @DatabaseField(canBeNull = true, columnName = FIELD_LATEST_EMAIL_TIME)
@@ -55,12 +59,13 @@ public class ContactInfo {
 
     // Used for database construction
     public ContactInfo() {
-
+        infoComplete = true;
     }
 
     public ContactInfo(String email, String name) {
         this.email = email;
         this.name = name;
+        infoComplete = true;
     }
 
     public String getEmail() {
@@ -77,6 +82,14 @@ public class ContactInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isInfoComplete() {
+        return infoComplete;
+    }
+
+    public void setInfoComplete(boolean infoComplete) {
+        this.infoComplete = infoComplete;
     }
 
     public String getTitle() {
@@ -111,11 +124,11 @@ public class ContactInfo {
         this.officeCountry = officeCountry;
     }
 
-    public String getNumberOfEmails() {
+    public int getNumberOfEmails() {
         return numberOfEmails;
     }
 
-    public void setNumberOfEmails(String numberOfEmails) {
+    public void setNumberOfEmails(int numberOfEmails) {
         this.numberOfEmails = numberOfEmails;
     }
 

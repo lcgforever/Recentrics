@@ -1,6 +1,6 @@
 package com.citrix.recentrics.model;
 
-import com.citrix.recentrics.database.ContactInfo;
+import com.citrix.recentrics.data.ContactInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

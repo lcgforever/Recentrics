@@ -13,8 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citrix.recentrics.R;
-import com.citrix.recentrics.database.ContactInfo;
+import com.citrix.recentrics.data.ContactInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoListAdapter.ContactViewHolder> {
@@ -30,7 +31,7 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
     public ContactInfoListAdapter(Context context, List<ContactInfo> contactInfoList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.contactInfoList = contactInfoList;
+        this.contactInfoList = new ArrayList<>(contactInfoList);
         expanded = new boolean[contactInfoList.size()];
     }
 
@@ -79,11 +80,9 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
             holder.callImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (phoneNumber != null) {
-                        Intent intent = new Intent(Intent.ACTION_CALL);
-                        intent.setData(Uri.parse("tel:" + phoneNumber));
-                        context.startActivity(intent);
-                    }
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + phoneNumber));
+                    context.startActivity(intent);
                 }
             });
         } else {
@@ -110,7 +109,7 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
 
     @Override
     public int getItemCount() {
-        return contactInfoList.size();
+        return contactInfoList == null ? 0 : contactInfoList.size();
     }
 
     public void updateContactInfoList(List<ContactInfo> contactInfos) {

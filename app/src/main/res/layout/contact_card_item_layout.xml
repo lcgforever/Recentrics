@@ -70,8 +70,8 @@
                     android:id="@+id/button_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -99,16 +99,14 @@
 
             </LinearLayout>
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <ImageView
                 android:id="@+id/circle_profile_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_marginRight="16dp"
                 android:scaleType="fitCenter"
-                app:riv_corner_radius="30dp"
-                app:riv_mutate_background="true"
-                app:riv_oval="true" />
+                android:transitionName="transition_profile_image" />
 
         </LinearLayout>
 
@@ -118,14 +116,22 @@
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="4dp"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/email_number_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/number_of_emails_text"
+                android:textAppearance="@style/TextAppearance.Card.Secondary"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/latest_email_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
+                android:layout_marginBottom="2dp"
                 android:maxLines="2"
                 android:text="5/2/2015 11:30 AM"
                 android:textAppearance="@style/TextAppearance.Card.Secondary" />

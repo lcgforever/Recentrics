@@ -13,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citrix.recentrics.R;
-import com.citrix.recentrics.database.ContactInfo;
-import com.makeramen.roundedimageview.RoundedImageView;
+import com.citrix.recentrics.data.ContactInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCardAdapter.ContactCardViewHolder> {
@@ -27,7 +27,7 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
     public ContactInfoCardAdapter(Context context, List<ContactInfo> contactInfoList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.contactInfoList = contactInfoList;
+        this.contactInfoList = new ArrayList<>(contactInfoList);
     }
 
     @Override
@@ -40,28 +40,30 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
     public void onBindViewHolder(ContactCardViewHolder holder, int position) {
         final ContactInfo contactInfo = contactInfoList.get(position);
         holder.nameText.setText(contactInfo.getName());
-        holder.titleText.setText(contactInfo.getTitle());
-        holder.phoneText.setText(contactInfo.getOfficePhoneNumber());
-        holder.officeCityText.setText(contactInfo.getOfficeCity());
+        holder.titleText.setText("Title: " + contactInfo.getTitle());
+        holder.phoneText.setText("Phone: " + contactInfo.getOfficePhoneNumber());
+        holder.officeCityText.setText("Office: " + contactInfo.getOfficeCity() + ", " + contactInfo.getOfficeCountry());
         holder.emailTimeText.setText(contactInfo.getLatestEmailTime());
         holder.emailContentText.setText(contactInfo.getLatestEmailContent());
+        holder.emailNumberText.setText(String.format(context.getString(R.string.number_of_emails_text),
+                contactInfo.getNumberOfEmails()));
 
         char c = contactInfo.getName().trim().toLowerCase().charAt(0);
         if (c >= 'a' && c < 'f') {
             holder.nameText.setBackgroundResource(R.color.amber);
-            holder.circleProfileImage.setBackgroundResource(R.drawable.profile_fox);
+            holder.profileImage.setBackgroundResource(R.drawable.ic_profile_fox);
         } else if (c >= 'f' && c < 'l') {
             holder.nameText.setBackgroundResource(R.color.cyan);
-            holder.circleProfileImage.setBackgroundResource(R.drawable.profile_lion);
+            holder.profileImage.setBackgroundResource(R.drawable.ic_profile_lion);
         } else if (c >= 'l' && c < 'q') {
             holder.nameText.setBackgroundResource(R.color.green);
-            holder.circleProfileImage.setBackgroundResource(R.drawable.profile_monkey);
+            holder.profileImage.setBackgroundResource(R.drawable.ic_profile_monkey);
         } else if (c >= 'q' && c < 'u') {
             holder.nameText.setBackgroundResource(R.color.purple);
-            holder.circleProfileImage.setBackgroundResource(R.drawable.profile_panda);
+            holder.profileImage.setBackgroundResource(R.drawable.ic_profile_panda);
         } else {
             holder.nameText.setBackgroundResource(R.color.red);
-            holder.circleProfileImage.setBackgroundResource(R.drawable.profile_tiger);
+            holder.profileImage.setBackgroundResource(R.drawable.ic_profile_tiger);
         }
 
         final String phoneNumber = contactInfo.getOfficePhoneNumber();
@@ -108,7 +110,7 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
 
     @Override
     public int getItemCount() {
-        return contactInfoList.size();
+        return contactInfoList == null ? 0 : contactInfoList.size();
     }
 
     public void updateContactInfoList(List<ContactInfo> contactInfos) {
@@ -127,7 +129,8 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
         private TextView officeCityText;
         private TextView emailTimeText;
         private TextView emailContentText;
-        private RoundedImageView circleProfileImage;
+        private TextView emailNumberText;
+        private ImageView profileImage;
         private ImageView callImage;
         private ImageView emailImage;
         private ImageView addContactImage;
@@ -141,7 +144,8 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
             officeCityText = (TextView) itemView.findViewById(R.id.office_city_text);
             emailTimeText = (TextView) itemView.findViewById(R.id.latest_email_time);
             emailContentText = (TextView) itemView.findViewById(R.id.latest_email_content);
-            circleProfileImage = (RoundedImageView) itemView.findViewById(R.id.circle_profile_image);
+            emailNumberText = (TextView) itemView.findViewById(R.id.email_number_text);
+            profileImage = (ImageView) itemView.findViewById(R.id.circle_profile_image);
             callImage = (ImageView) itemView.findViewById(R.id.call_image);
             emailImage = (ImageView) itemView.findViewById(R.id.email_image);
             addContactImage = (ImageView) itemView.findViewById(R.id.add_contact_image);

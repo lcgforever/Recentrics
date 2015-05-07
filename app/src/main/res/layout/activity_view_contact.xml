@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context="com.citrix.recentrics.activity.ViewContactActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,37 +16,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/app_name"
+            android:text="@string/contacts_fragment_name"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
-
-        <android.support.v7.widget.ActionMenuView
-            android:id="@+id/menu_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:background="@color/primary"
-            android:gravity="center"
-            android:padding="10dp" />
 
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
+        android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:transitionName="@string/transition_more">
 
-        <com.citrix.recentrics.library.SlidingTabLayout
-            android:id="@+id/tab_layout"
+        <ListView
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/primary"
-            android:elevation="6dp" />
+            android:layout_height="match_parent"
+            android:drawSelectorOnTop="true"
+            android:scrollbars="vertical" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <include layout="@layout/contact_card_item_layout" />
 
     </LinearLayout>
 

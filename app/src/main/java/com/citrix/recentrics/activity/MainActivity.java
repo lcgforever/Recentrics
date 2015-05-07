@@ -1,17 +1,21 @@
 package com.citrix.recentrics.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.citrix.recentrics.R;
 import com.citrix.recentrics.database.DatabaseManager;
@@ -20,9 +24,11 @@ import com.citrix.recentrics.fragment.MeetingsFragment;
 import com.citrix.recentrics.fragment.TravelFragment;
 import com.citrix.recentrics.library.SlidingTabLayout;
 
-public class MainActivity extends AppCompatActivity implements ActionMenuView.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements ActionMenuView.OnMenuItemClickListener,
+        MeetingsFragment.StartActivityListener {
 
     public static final String PREF_VIEW_IN_CARD = "PREF_VIEW_IN_CARD";
+    public static final int USER_KEY = 2;
     private static final int TOTAL_TAB_COUNT = 3;
 
     private Toolbar toolbar;
@@ -110,6 +116,19 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
         return true;
     }
 
+    @Override
+    public void onStartActivity(String json, View view, String transition) {
+        Intent intent = new Intent(this, ViewContactActivity.class);
+        if (transition.equals(getString(R.string.transition_more))) {
+            intent.putExtra(ViewContactActivity.LIST_CONTACT_INFO, json);
+        } else {
+            intent.putExtra(ViewContactActivity.DATA_CONTACT_INFO, json);
+        }
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, new Pair<>(view, transition),
+                new Pair<View, String>(toolbar, getString(R.string.transition_toolbar)));
+        startActivity(intent, optionsCompat.toBundle());
+    }
 
     private class TabsAdapter extends FragmentPagerAdapter {
 

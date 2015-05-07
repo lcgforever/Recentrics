@@ -9,5 +9,10 @@
     <string name="snackbar_action">DISMISS</string>
     <string name="action_list_view">View in list</string>
     <string name="action_card_view">View in card</string>
+    <string name="number_of_emails_text">Latest email (Total recent: %d)</string>
+    <string name="title_activity_view_contact">ViewContactActivity</string>
+    <string name="transition_toolbar">transition_toolbar</string>
+    <string name="transition_more">transition_more</string>
+    <string name="transition_profile_image">transition_profile_image</string>
 
 </resources>

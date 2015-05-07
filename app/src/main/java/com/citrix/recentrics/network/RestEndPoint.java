@@ -8,7 +8,7 @@ public class RestEndPoint implements Endpoint {
 
     @Override
     public String getUrl() {
-        return "http://10.39.62.168:8080";
+        return "http://54.67.71.68:8080";
     }
 
     @Override

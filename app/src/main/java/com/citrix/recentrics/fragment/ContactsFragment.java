@@ -18,7 +18,7 @@ import com.citrix.recentrics.activity.BaseApplication;
 import com.citrix.recentrics.activity.MainActivity;
 import com.citrix.recentrics.adapter.ContactInfoCardAdapter;
 import com.citrix.recentrics.adapter.ContactInfoListAdapter;
-import com.citrix.recentrics.event.DataUpdatedEvent;
+import com.citrix.recentrics.event.ContactInfoUpdatedEvent;
 import com.citrix.recentrics.event.TimeOutEvent;
 import com.citrix.recentrics.model.ContactModel;
 import com.citrix.recentrics.network.GetContactInfoTask;
@@ -30,7 +30,7 @@ import com.squareup.otto.Subscribe;
 
 public class ContactsFragment extends Fragment {
 
-    private static final int DELAY_IN_MILLIS = 6000;
+    private static final int DELAY_IN_MILLIS = 11000;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -103,7 +103,7 @@ public class ContactsFragment extends Fragment {
 
     private void refreshContacts() {
         showRefreshProgress();
-        GetContactInfoTask.getInstance().getContactInfoListByKey(1);
+        GetContactInfoTask.getInstance().getContactInfoListByKey(MainActivity.USER_KEY);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -132,7 +132,7 @@ public class ContactsFragment extends Fragment {
     }
 
     @Subscribe
-    public void onDataUpdatedEventReceived(DataUpdatedEvent event) {
+    public void onContactInfoUpdatedEventReceived(ContactInfoUpdatedEvent event) {
         if (recyclerView.getAdapter() instanceof ContactInfoListAdapter) {
             contactInfoListAdapter.updateContactInfoList(contactModel.getContactInfoList());
         } else {
