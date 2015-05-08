@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
 
     private Toolbar toolbar;
     private ActionMenuView menuView;
-    private ViewPager viewPager;
     private TabsAdapter tabsAdapter;
     private MenuItem changeViewItem;
     private SharedPreferences preferences;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
         menuView.setOnMenuItemClickListener(this);
 
         SlidingTabLayout tabLayout = (SlidingTabLayout) findViewById(R.id.tab_layout);
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         Fragment[] fragments = {ContactsFragment.newInstance(), MeetingsFragment.newInstance(), TravelFragment.newInstance()};
         tabsAdapter = new TabsAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(tabsAdapter);
@@ -67,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements ActionMenuView.On
         tabLayout.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                if (position != 0) {
+                    ((ContactsFragment) tabsAdapter.getItem(0)).cancelActionMode();
+                }
                 if (changeViewItem != null) {
                     changeViewItem.setVisible(position == 0);
                 }

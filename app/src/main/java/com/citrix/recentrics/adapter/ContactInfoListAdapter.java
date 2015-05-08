@@ -8,12 +8,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.citrix.recentrics.R;
+import com.citrix.recentrics.adapter.ContactInfoCardAdapter.ItemClickListener;
 import com.citrix.recentrics.data.ContactInfo;
+import com.citrix.recentrics.model.ContactModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +30,21 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
     private Context context;
     private LayoutInflater inflater;
     private List<ContactInfo> contactInfoList;
-    private boolean[] expanded;
+    private boolean[] expandedPositions;
+    private boolean[] selectedPositions;
+    private int totalSelectedNum;
+    private ItemClickListener itemClickListener;
+    private boolean inActionMode;
 
-    public ContactInfoListAdapter(Context context, List<ContactInfo> contactInfoList) {
+    public ContactInfoListAdapter(Context context, List<ContactInfo> contactInfoList, ItemClickListener listener) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.contactInfoList = new ArrayList<>(contactInfoList);
-        expanded = new boolean[contactInfoList.size()];
+        itemClickListener = listener;
+        selectedPositions = new boolean[contactInfoList.size()];
+        expandedPositions = new boolean[contactInfoList.size()];
+        totalSelectedNum = 0;
+        inActionMode = false;
     }
 
     @Override
@@ -48,7 +60,7 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
 
     @Override
     public int getItemViewType(int position) {
-        if (expanded[position]) {
+        if (expandedPositions[position]) {
             return TYPE_EXPANDED;
         } else {
             return TYPE_COLLAPSED;
@@ -98,11 +110,27 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
             ((ContactExpandedViewHolder) holder).latestEmailContent.setText(contactInfo.getLatestEmailContent());
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.selectedView.setVisibility(selectedPositions[position] ? View.VISIBLE : View.GONE);
+        holder.contentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expanded[position] = !expanded[position];
-                notifyItemChanged(position);
+                if (inActionMode) {
+                    toggleSelectedPosition(position);
+                    itemClickListener.onItemClicked(position);
+                } else {
+                    expandedPositions[position] = !expandedPositions[position];
+                    notifyItemChanged(position);
+                }
+            }
+        });
+        holder.contentLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (!inActionMode) {
+                    toggleSelectedPosition(position);
+                    itemClickListener.onItemLongClicked(position);
+                }
+                return true;
             }
         });
     }
@@ -117,9 +145,50 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
         for (ContactInfo contactInfo : contactInfos) {
             contactInfoList.add(contactInfo);
         }
-        expanded = new boolean[contactInfoList.size()];
+        selectedPositions = new boolean[contactInfoList.size()];
+        expandedPositions = new boolean[contactInfoList.size()];
+        totalSelectedNum = 0;
         notifyDataSetChanged();
     }
+
+    public void toggleSelectedPosition(final int position) {
+        selectedPositions[position] = !selectedPositions[position];
+        notifyDataSetChanged();
+        if (selectedPositions[position]) {
+            totalSelectedNum++;
+        } else {
+            totalSelectedNum--;
+        }
+    }
+
+    public void cancelAllSelection() {
+        for (int i = 0; i < selectedPositions.length; ++i) {
+            selectedPositions[i] = false;
+        }
+        notifyDataSetChanged();
+        totalSelectedNum = 0;
+    }
+
+    public int getTotalSelectedNum() {
+        return totalSelectedNum;
+    }
+
+    public void deleteSelectedItems() {
+        int offset = 0;
+        for (int i = 0; i < selectedPositions.length; ++i) {
+            if (selectedPositions[i]) {
+                ContactModel.getInstance().removeContactInfo(contactInfoList.get(i - offset));
+                contactInfoList.remove(i - offset);
+                notifyItemRemoved(i - offset);
+                ++offset;
+            }
+        }
+    }
+
+    public void setInActionMode(boolean inActionMode) {
+        this.inActionMode = inActionMode;
+    }
+
 
     protected class ContactViewHolder extends RecyclerView.ViewHolder {
 
@@ -127,6 +196,8 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
         private TextView nameText;
         private TextView emailText;
         private ImageView callImage;
+        private LinearLayout selectedView;
+        private FrameLayout contentLayout;
 
         public ContactViewHolder(View itemView) {
             super(itemView);
@@ -135,6 +206,8 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
             nameText = (TextView) itemView.findViewById(R.id.name_text);
             emailText = (TextView) itemView.findViewById(R.id.email_text);
             callImage = (ImageView) itemView.findViewById(R.id.call_image);
+            selectedView = (LinearLayout) itemView.findViewById(R.id.selected_view);
+            contentLayout = (FrameLayout) itemView.findViewById(R.id.content_frame);
         }
     }
 

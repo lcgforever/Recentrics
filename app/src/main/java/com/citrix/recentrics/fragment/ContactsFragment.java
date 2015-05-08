@@ -9,7 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,7 +31,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment implements ContactInfoCardAdapter.ItemClickListener {
 
     private static final int DELAY_IN_MILLIS = 11000;
 
@@ -38,6 +41,7 @@ public class ContactsFragment extends Fragment {
     private ContactInfoListAdapter contactInfoListAdapter;
     private ContactModel contactModel;
     private Bus bus;
+    private ActionMode actionMode;
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
@@ -51,9 +55,10 @@ public class ContactsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contactModel = ContactModel.getInstance();
-        contactInfoCardAdapter = new ContactInfoCardAdapter(getActivity(), contactModel.getContactInfoList());
-        contactInfoListAdapter = new ContactInfoListAdapter(getActivity(), contactModel.getContactInfoList());
+        contactInfoCardAdapter = new ContactInfoCardAdapter(getActivity(), contactModel.getContactInfoList(), this);
+        contactInfoListAdapter = new ContactInfoListAdapter(getActivity(), contactModel.getContactInfoList(), this);
         bus = BaseApplication.getBus();
+        actionMode = null;
     }
 
     @Override
@@ -65,6 +70,7 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        cancelActionMode();
         bus.unregister(this);
         SnackbarManager.dismiss();
     }
@@ -94,11 +100,29 @@ public class ContactsFragment extends Fragment {
                 swipeRefreshLayout.setEnabled(layoutManager.findFirstCompletelyVisibleItemPosition() == 0);
             }
         });
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        boolean showInCardView = sharedPreferences.getBoolean(MainActivity.PREF_VIEW_IN_CARD, false);
-        recyclerView.setAdapter(showInCardView ? contactInfoCardAdapter : contactInfoListAdapter);
+
+        recyclerView.setAdapter(isCardViewMode() ? contactInfoCardAdapter : contactInfoListAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        if (isCardViewMode()) {
+            actionMode.setTitle(contactInfoCardAdapter.getTotalSelectedNum() + " selected");
+        } else {
+            actionMode.setTitle(contactInfoListAdapter.getTotalSelectedNum() + " selected");
+        }
+    }
+
+    @Override
+    public void onItemLongClicked(int position) {
+        getActivity().startActionMode(new ActionModeCallback());
+    }
+
+    private boolean isCardViewMode() {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(MainActivity.PREF_VIEW_IN_CARD, false);
     }
 
     private void refreshContacts() {
@@ -122,13 +146,19 @@ public class ContactsFragment extends Fragment {
     }
 
     public void changeToCardView() {
-        contactInfoCardAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        contactInfoCardAdapter.updateContactInfoList(ContactModel.getInstance().getContactInfoList());
         recyclerView.setAdapter(contactInfoCardAdapter);
     }
 
     public void changeToListView() {
-        contactInfoListAdapter.updateContactInfoList(contactModel.getContactInfoList());
+        contactInfoListAdapter.updateContactInfoList(ContactModel.getInstance().getContactInfoList());
         recyclerView.setAdapter(contactInfoListAdapter);
+    }
+
+    public void cancelActionMode() {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
     }
 
     @Subscribe
@@ -137,12 +167,18 @@ public class ContactsFragment extends Fragment {
             contactInfoListAdapter.updateContactInfoList(contactModel.getContactInfoList());
         } else {
             contactInfoCardAdapter.updateContactInfoList(contactModel.getContactInfoList());
+            if (actionMode != null) {
+                actionMode.finish();
+            }
         }
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Subscribe
     public void onTimeOutEventReceived(TimeOutEvent event) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
         SnackbarManager.show(
                 Snackbar.with(getActivity())
                         .text(getString(R.string.snackbar_message))
@@ -156,5 +192,56 @@ public class ContactsFragment extends Fragment {
                                 SnackbarManager.dismiss();
                             }
                         }));
+    }
+
+
+    private class ActionModeCallback implements ActionMode.Callback {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            getActivity().getMenuInflater().inflate(R.menu.action_menu, menu);
+            actionMode = mode;
+            actionMode.setTitle("1 selected");
+            if (isCardViewMode()) {
+                contactInfoCardAdapter.setInActionMode(true);
+            } else {
+                contactInfoListAdapter.setInActionMode(true);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    if (isCardViewMode()) {
+                        contactInfoCardAdapter.deleteSelectedItems();
+                    } else {
+                        contactInfoListAdapter.deleteSelectedItems();
+                    }
+
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            if (isCardViewMode()) {
+                contactInfoCardAdapter.cancelAllSelection();
+                contactInfoCardAdapter.setInActionMode(false);
+            } else {
+                contactInfoListAdapter.cancelAllSelection();
+                contactInfoListAdapter.setInActionMode(false);
+            }
+            actionMode = null;
+        }
     }
 }
