@@ -19,6 +19,8 @@ import com.citrix.recentrics.data.ContactInfo;
 import com.citrix.recentrics.model.ContactModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCardAdapter.ContactCardViewHolder> {
@@ -35,6 +37,7 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.contactInfoList = new ArrayList<>(contactInfoList);
+        Collections.sort(this.contactInfoList, new EmailNumberComparator());
         itemClickListener = listener;
         selectedCardPositions = new boolean[contactInfoList.size()];
         totalSelectedNum = 0;
@@ -150,6 +153,7 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
         for (ContactInfo contactInfo : contactInfos) {
             contactInfoList.add(contactInfo);
         }
+        Collections.sort(contactInfoList, new EmailNumberComparator());
         selectedCardPositions = new boolean[contactInfoList.size()];
         totalSelectedNum = 0;
         notifyDataSetChanged();
@@ -233,6 +237,22 @@ public class ContactInfoCardAdapter extends RecyclerView.Adapter<ContactInfoCard
             addContactImage = (ImageView) itemView.findViewById(R.id.add_contact_image);
             selectedView = (LinearLayout) itemView.findViewById(R.id.selected_view);
             clickableLayout = (FrameLayout) itemView.findViewById(R.id.clickable_card);
+        }
+    }
+
+    private class EmailNumberComparator implements Comparator<ContactInfo> {
+
+        @Override
+        public int compare(ContactInfo lhs, ContactInfo rhs) {
+            int leftNumber = lhs.getNumberOfEmails();
+            int rightNumber = rhs.getNumberOfEmails();
+            if (leftNumber == rightNumber) {
+                return 0;
+            } else if (leftNumber > rightNumber) {
+                return -1;
+            } else {
+                return 1;
+            }
         }
     }
 }

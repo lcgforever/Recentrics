@@ -20,6 +20,8 @@ import com.citrix.recentrics.data.ContactInfo;
 import com.citrix.recentrics.model.ContactModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoListAdapter.ContactViewHolder> {
@@ -40,6 +42,7 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.contactInfoList = new ArrayList<>(contactInfoList);
+        Collections.sort(this.contactInfoList, new EmailNumberComparator());
         itemClickListener = listener;
         selectedPositions = new boolean[contactInfoList.size()];
         expandedPositions = new boolean[contactInfoList.size()];
@@ -145,6 +148,7 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
         for (ContactInfo contactInfo : contactInfos) {
             contactInfoList.add(contactInfo);
         }
+        Collections.sort(contactInfoList, new EmailNumberComparator());
         selectedPositions = new boolean[contactInfoList.size()];
         expandedPositions = new boolean[contactInfoList.size()];
         totalSelectedNum = 0;
@@ -229,6 +233,22 @@ public class ContactInfoListAdapter extends RecyclerView.Adapter<ContactInfoList
             officeCountryText = (TextView) itemView.findViewById(R.id.office_country_text);
             latestEmailTime = (TextView) itemView.findViewById(R.id.latest_email_time);
             latestEmailContent = (TextView) itemView.findViewById(R.id.latest_email_content);
+        }
+    }
+
+    private class EmailNumberComparator implements Comparator<ContactInfo> {
+
+        @Override
+        public int compare(ContactInfo lhs, ContactInfo rhs) {
+            int leftNumber = lhs.getNumberOfEmails();
+            int rightNumber = rhs.getNumberOfEmails();
+            if (leftNumber == rightNumber) {
+                return 0;
+            } else if (leftNumber > rightNumber) {
+                return -1;
+            } else {
+                return 1;
+            }
         }
     }
 }
